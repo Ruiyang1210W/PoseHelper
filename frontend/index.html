@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PoseHelper — Pose Reference for Artists</title>
+  <style>
+    :root {
+      --bg:           #F4F3F0;
+      --card:         #FFFFFF;
+      --accent:       #6B5CE7;
+      --accent-dim:   #EAE8FC;
+      --accent-hover: #5A4BD0;
+      --text:         #1A1A2E;
+      --muted:        #6B6B7B;
+      --border:       #E2E0E8;
+      --shadow:       0 2px 14px rgba(0,0,0,0.07);
+      --r:            12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+    .logo      { font-size: 20px; font-weight: 700; letter-spacing: -.4px; color: var(--accent); }
+    .logo-sub  { font-size: 13px; color: var(--muted); }
+
+    /* ── Main wrapper ── */
+    main { max-width: 960px; margin: 0 auto; padding: 40px 20px 80px; }
+
+    /* ── Error banner ── */
+    .error-banner {
+      display: none;
+      background: #FFF0F0;
+      border: 1px solid #FFD0D0;
+      border-radius: var(--r);
+      padding: 14px 18px;
+      color: #C0392B;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Upload zone ── */
+    .upload-zone {
+      background: var(--card);
+      border: 2px dashed var(--border);
+      border-radius: var(--r);
+      padding: 72px 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .18s, background .18s;
+      user-select: none;
+    }
+    .upload-zone:hover,
+    .upload-zone.over { border-color: var(--accent); background: var(--accent-dim); }
+
+    .upload-icon {
+      width: 52px; height: 52px;
+      margin: 0 auto 18px;
+      color: var(--accent);
+      opacity: .65;
+    }
+    .upload-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+    .upload-hint  { font-size: 14px; color: var(--muted); }
+
+    .pick-btn {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 10px 26px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .pick-btn:hover { background: var(--accent-hover); }
+
+    /* ── Loading ── */
+    .loading {
+      display: none;
+      background: var(--card);
+      border-radius: var(--r);
+      padding: 64px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .spinner {
+      width: 42px; height: 42px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading p { color: var(--muted); font-size: 14px; }
+
+    /* ── Results ── */
+    .results { display: none; }
+
+    /* image pair */
+    .img-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 560px) { .img-grid { grid-template-columns: 1fr; } }
+
+    .img-card {
+      background: var(--card);
+      border-radius: var(--r);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .img-card-label {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .9px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .img-card img {
+      width: 100%;
+      display: block;
+      max-height: 380px;
+      object-fit: contain;
+      background: #EFEFEF;
+    }
+
+    /* pose info row */
+    .info-row {
+      background: var(--card);
+      border-radius: var(--r);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .pose-name {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+      text-transform: capitalize;
+      color: var(--accent);
+    }
+    .pose-conf { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+    .dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .dl-btn:hover { background: var(--accent-hover); }
+
+    /* confidence bars */
+    .scores-card {
+      background: var(--card);
+      border-radius: var(--r);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
+    }
+    .scores-heading {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .9px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    .score-row { margin-bottom: 13px; }
+    .score-row:last-child { margin-bottom: 0; }
+
+    .score-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+    .score-label { font-weight: 500; text-transform: capitalize; }
+    .score-pct   { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+
+    .bar-track {
+      height: 7px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: #C8C2F5;
+      transition: width .55s cubic-bezier(.4,0,.2,1);
+    }
+    .score-row.best .bar-fill {
+      background: linear-gradient(90deg, var(--accent), #9D8EF5);
+    }
+
+    /* reset */
+    .reset-btn {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 2px solid var(--border);
+      border-radius: var(--r);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--muted);
+      transition: border-color .15s, color .15s;
+    }
+    .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="logo">PoseHelper</span>
+  <span class="logo-sub">ML-powered pose reference for artists</span>
+</header>
+
+<main>
+
+  <div class="error-banner" id="err"></div>
+
+  <!-- Upload -->
+  <div class="upload-zone" id="drop-zone">
+    <svg class="upload-icon" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <circle cx="8.5" cy="8.5" r="1.5"/>
+      <polyline points="21 15 16 10 5 21"/>
+    </svg>
+    <div class="upload-title">Drop a photo here</div>
+    <div class="upload-hint">or click to browse — JPG, PNG, WEBP</div>
+    <button class="pick-btn" id="pick-btn">Choose Photo</button>
+    <input type="file" id="file-input" accept="image/*" hidden />
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Analyzing pose&hellip;</p>
+  </div>
+
+  <!-- Results -->
+  <div class="results" id="results">
+
+    <div class="img-grid">
+      <div class="img-card">
+        <div class="img-card-label">Original Photo</div>
+        <img id="orig-img" src="" alt="Original photo" />
+      </div>
+      <div class="img-card">
+        <div class="img-card-label">Mannequin Reference</div>
+        <img id="mann-img" src="" alt="Mannequin" />
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div>
+        <div class="pose-name" id="pose-name"></div>
+        <div class="pose-conf" id="pose-conf"></div>
+      </div>
+      <button class="dl-btn" id="dl-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download Mannequin
+      </button>
+    </div>
+
+    <div class="scores-card">
+      <div class="scores-heading">Class Confidence</div>
+      <div id="scores"></div>
+    </div>
+
+    <button class="reset-btn" id="reset-btn">Try another photo &rarr;</button>
+
+  </div>
+</main>
+
+<script>
+  const dropZone  = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+  const pickBtn   = document.getElementById('pick-btn');
+  const loadingEl = document.getElementById('loading');
+  const resultsEl = document.getElementById('results');
+  const errEl     = document.getElementById('err');
+
+  // ── drag & drop ──────────────────────────────────────────────────────────
+
+  dropZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropZone.classList.add('over');
+  });
+  ['dragleave', 'dragend'].forEach(ev =>
+    dropZone.addEventListener(ev, () => dropZone.classList.remove('over'))
+  );
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) submit(f);
+  });
+
+  // ── click to browse ───────────────────────────────────────────────────────
+
+  pickBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    fileInput.click();
+  });
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files[0]) submit(fileInput.files[0]);
+  });
+
+  // ── reset ─────────────────────────────────────────────────────────────────
+
+  document.getElementById('reset-btn').addEventListener('click', reset);
+
+  function reset() {
+    resultsEl.style.display = 'none';
+    errEl.style.display     = 'none';
+    dropZone.style.display  = 'block';
+    fileInput.value         = '';
+  }
+
+  // ── main submit ───────────────────────────────────────────────────────────
+
+  function submit(file) {
+    errEl.style.display    = 'none';
+    dropZone.style.display = 'none';
+    resultsEl.style.display= 'none';
+    loadingEl.style.display= 'block';
+
+    // show original image immediately
+    const reader = new FileReader();
+    reader.onload = e => { document.getElementById('orig-img').src = e.target.result; };
+    reader.readAsDataURL(file);
+
+    const fd = new FormData();
+    fd.append('file', file);
+
+    fetch('/predict', { method: 'POST', body: fd })
+      .then(r => r.ok ? r.json() : r.json().then(j => Promise.reject(j.detail || 'Server error')))
+      .then(showResults)
+      .catch(msg => {
+        loadingEl.style.display = 'none';
+        dropZone.style.display  = 'block';
+        errEl.textContent       = 'Error: ' + msg;
+        errEl.style.display     = 'block';
+      });
+  }
+
+  // ── render results ────────────────────────────────────────────────────────
+
+  function showResults(data) {
+    loadingEl.style.display = 'none';
+
+    const mannSrc = 'data:image/png;base64,' + data.mannequin_image;
+    document.getElementById('mann-img').src = mannSrc;
+
+    document.getElementById('pose-name').textContent =
+      data.label.replace(/_/g, ' ');
+    document.getElementById('pose-conf').textContent =
+      (data.confidence * 100).toFixed(1) + '% confidence';
+
+    const dlBtn = document.getElementById('dl-btn');
+    dlBtn.onclick = () => {
+      const a = Object.assign(document.createElement('a'), {
+        href: mannSrc,
+        download: 'posehelper_' + data.label + '.png',
+      });
+      a.click();
+    };
+
+    // confidence bars — sorted descending
+    const scoresEl = document.getElementById('scores');
+    scoresEl.innerHTML = '';
+    const sorted = Object.entries(data.all_scores).sort((a, b) => b[1] - a[1]);
+
+    sorted.forEach(([cls, score], i) => {
+      const pct   = (score * 100).toFixed(1);
+      const isBest= i === 0;
+
+      const row = document.createElement('div');
+      row.className = 'score-row' + (isBest ? ' best' : '');
+      row.innerHTML = `
+        <div class="score-header">
+          <span class="score-label">${cls.replace(/_/g, ' ')}</span>
+          <span class="score-pct">${pct}%</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:0"></div></div>
+      `;
+      scoresEl.appendChild(row);
+
+      // staggered bar animation
+      setTimeout(() => {
+        row.querySelector('.bar-fill').style.width = pct + '%';
+      }, 40 + i * 60);
+    });
+
+    resultsEl.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>

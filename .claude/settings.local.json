@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"C:\\\\Users\\\\wangr\\\\anaconda3\\\\Scripts\\\\conda.exe\" env list)"
+    ]
+  }
+}
