@@ -1,8 +1,18 @@
 # PoseHelper
 
-ML-powered human pose reference tool for artists. Upload a photo, get a predicted yoga pose label and a clean skeleton mannequin you can use as a drawing reference.
+ML-powered human pose reference tool for artists. Upload a photo, get a predicted yoga pose label and a clean skeleton mannequin you can use as a drawing reference. 
+
+
+PoseHelper uses MoveNet SinglePose Thunder, which is optimized for single-person images. For best results, upload photos with one clearly visible person and a full body in frame. Multi-person support would require MoveNet MultiPose, which is a planned future improvement.
 
 ![PoseHelper demo](<Posehelper screenshot1.png>)
+![PoseHelper demo](<Posehelper screenshot2.png>)
+![PoseHelper demo](<Posehelper screenshot3.png>)
+
+## Requirements
+
+- Python 3.9+
+- See `requirements.txt` for all dependencies
 
 ## Setup
 
@@ -61,6 +71,16 @@ features = keypoints[:, [1, 0]].flatten()
 # include confidence — 51 features
 features = keypoints.flatten()
 ```
+
+## Main Code Locations
+
+| What | Where |
+|---|---|
+| Training notebook | `notebooks/posehelper_training.ipynb` |
+| MoveNet inference + classifier | `app/model.py` |
+| Mannequin renderer | `app/renderer.py` |
+| FastAPI endpoint | `app/main.py` |
+| Frontend UI | `frontend/index.html` |
 
 ## Project layout
 
