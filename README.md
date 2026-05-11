@@ -2,6 +2,8 @@
 
 ML-powered human pose reference tool for artists. Upload a photo, get a predicted yoga pose label and a clean skeleton mannequin you can use as a drawing reference.
 
+![PoseHelper demo](<Posehelper screenshot1.png>)
+
 ## Setup
 
 ```bash
@@ -9,8 +11,6 @@ pip install -r requirements.txt
 ```
 
 ### Model files
-
-Drop these three files into `models/` before running:
 
 | File | Description |
 |---|---|
