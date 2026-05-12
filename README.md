@@ -2,12 +2,51 @@
 
 ML-powered human pose reference tool for artists. Upload a photo, get a predicted yoga pose label and a clean skeleton mannequin you can use as a drawing reference. 
 
+The yoga pose label isn't just a fun fact. If PoseHelper tells you your reference photo is 90% similar to a Warrior2 pose, you now have a search term. You can look up 'Warrior2' and find dozens of reference photos from different angles, with different clothing, showing the muscle groups in detail — all without having to describe the pose yourself!
 
 PoseHelper uses MoveNet SinglePose Thunder, which is optimized for single-person images. For best results, upload photos with one clearly visible person and a full body in frame. Multi-person support would require MoveNet MultiPose, which is a planned future improvement.
 
 ![PoseHelper demo](<Posehelper screenshot1.png>)
 ![PoseHelper demo](<Posehelper screenshot2.png>)
-![PoseHelper demo](<Posehelper screenshot3.png>)
+
+## From Reference to Artwork
+
+Here's PoseHelper in action — from a photo of a challenging and dynamic pose all the way to a finished digital painting.
+
+**Input photo + generated mannequin**
+
+![Pose photo and mannequin reference](<artprogress_images/Posehelper screenshot3.png>)
+
+**Step-by-step art process**
+
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="artprogress_images/1.png" alt="Step 1 — Download mannequin"/><br/>
+      <b>Step 1 — Download the mannequin</b><br/>
+      <sub>Save the generated skeleton as your drawing guide</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="artprogress_images/2.jpg" alt="Step 2 — Draft sketch"/><br/>
+      <b>Step 2 — Draft sketch</b><br/>
+      <sub>Use the keypoints and body structure as a foundation</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="artprogress_images/3.jpg" alt="Step 3 — Line art"/><br/>
+      <b>Step 3 — Line art</b><br/>
+      <sub>Refine the lines and cross-check proportions against the mannequin</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="artprogress_images/finish.jpg" alt="Step 4 — Finished painting"/><br/>
+      <b>Step 4 — Finished</b><br/>
+      <sub>Color, shading, and final details</sub>
+    </td>
+  </tr>
+</table>
+
+**Full time-lapse (Procreate recording)**
+
+[![Watch the full art process on YouTube](https://img.youtube.com/vi/Uhw-MW6Wb68/hqdefault.jpg)](https://www.youtube.com/shorts/Uhw-MW6Wb68)
 
 ## Requirements
 
