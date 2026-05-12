@@ -6,6 +6,8 @@ The yoga pose label isn't just a fun fact. If PoseHelper tells you your referenc
 
 PoseHelper uses MoveNet SinglePose Thunder, which is optimized for single-person images. For best results, upload photos with one clearly visible person and a full body in frame. Multi-person support would require MoveNet MultiPose, which is a planned future improvement.
 
+**[Watch the full presentation demo](https://youtu.be/kZ_Mgruca44)**
+
 ![PoseHelper demo](<Posehelper screenshot1.png>)
 ![PoseHelper demo](<Posehelper screenshot2.png>)
 
