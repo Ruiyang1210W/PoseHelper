@@ -11,6 +11,13 @@ PoseHelper uses MoveNet SinglePose Thunder, which is optimized for single-person
 ![PoseHelper demo](<Posehelper screenshot1.png>)
 ![PoseHelper demo](<Posehelper screenshot2.png>)
 
+## Live Demo
+
+Try it here: https://huggingface.co/spaces/OspreyMoby/posehelper
+
+Upload any single-person photo and get a clean skeleton mannequin reference instantly.
+
+
 ## From Reference to Artwork
 
 Here's PoseHelper in action — from a photo of a challenging and dynamic pose all the way to a finished digital painting.
